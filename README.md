@@ -12,4 +12,9 @@ The page contains a moving average of sales by date. A sales waterfall chart by 
 
 ![Rolling Average](https://github.com/Qehh/Power_BI_Report/assets/58768263/a5c0a21e-ba3c-48ee-98a0-e456e1d416bf)
 
+## 3. Missed Sales
+The page shows the amount of missed sales for the month with accumulated loss. A dynamic slice with target sales is implemented. The histogram shows the number of customers by age. The age of customers is divided into selected ranges. Pie chart shows sales ranking by country.
+
+![Missed Sales](https://github.com/Qehh/Power_BI_Report/assets/58768263/64aa1f39-c363-4980-84c0-7835ef750efc)
+
 
