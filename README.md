@@ -1,2 +1,2 @@
-# Power BI Report
+Power BI Report
 # Financial overview
