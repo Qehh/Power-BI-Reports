@@ -17,4 +17,9 @@ The page shows the amount of missed sales for the month with accumulated loss. A
 
 ![Missed Sales](https://github.com/Qehh/Power_BI_Report/assets/58768263/64aa1f39-c363-4980-84c0-7835ef750efc)
 
+## 4. Sales Rating
+The main visual element of the page is the boxplot diagram, which is not part of the standard set of Power BI visual elements.
+
+![Sales Rating](https://github.com/Qehh/Power_BI_Report/assets/58768263/467be536-a120-4d13-9cc1-d3a0ff3b7284)
+
 
