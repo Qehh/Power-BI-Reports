@@ -23,7 +23,7 @@ The main visual element of the page is the boxplot diagram, which is not part of
 
 ![Sales Rating](https://github.com/Qehh/Power_BI_Report/assets/58768263/467be536-a120-4d13-9cc1-d3a0ff3b7284)
 
-## [Some valuable report measures](https://github.com/Qehh/Power_BI_Report/blob/main/measures)
+## [Some valuable report measures](https://github.com/Qehh/Power_BI_Report/blob/main/Financial%20Overview/measures)
 
 
 
