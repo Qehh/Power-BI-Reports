@@ -1,1 +1,116 @@
+Sales USA vs Total = 
+    VAR total_sales = CALCULATE(SUM('FactOnlineSales'[SalesAmount]), ALL('DimDate'[CalendarYear]))
 
+    VAR sales_usa = CALCULATE(SUM('FactOnlineSales'[SalesAmount]), 'DimGeography'[RegionCountryName] = "United States")
+
+    RETURN DIVIDE(sales_usa, total_sales)
+---------------------------------------------------------------------------------------------------------------------------
+Number Music, Movies and Audio Books = 
+    VAR _category = "Music, Movies and Audio Books"
+    VAR _value_lm = 
+            
+                CALCULATE(
+                          [Total Sales PM],
+                          'DimProductCategory'[ProductCategoryName] = _category)
+                          
+            
+
+    VAR _value_cm = 
+          
+                CALCULATE(
+                          [Total Sales CM],
+                          'DimProductCategory'[ProductCategoryName] = _category)
+                         
+            
+
+    VAR _result = FORMAT (
+                        DIVIDE(_value_cm, _value_lm), "#0%"
+    )
+
+    RETURN _result
+----------------------------------------------------------------------------------------------------------------------------
+Labels Sales Percents = 
+    VAR selected_param = SELECTEDVALUE('Parameter_Sales_Quantity'[Parameter_Sales_Quantity Order])
+    VAR space = UNICHAR(127)
+
+    RETURN SWITCH(TRUE(),
+                  selected_param = 0,
+                  FORMAT(DIVIDE([Total Sales] - [Total Sales LY], [Total Sales LY]), "+0.0%;-0.0%"),
+
+                  selected_param = 1,
+                  FORMAT(DIVIDE([Total Quantity] - [Total Quantity LY], [Total Quantity LY]), "+0.0%;-0.0%")
+    )
+----------------------------------------------------------------------------------------------------------------------------
+Labels Sales Continents = 
+    VAR selected_param = SELECTEDVALUE('Parameter_Sales_Quantity'[Parameter_Sales_Quantity Order])
+    VAR space = UNICHAR(127)
+
+    RETURN SWITCH(TRUE(),
+                  selected_param = 0,
+                  SELECTEDVALUE('DimGeography'[ContinentName]),
+
+                  selected_param = 1,
+                  SELECTEDVALUE('DimGeography'[ContinentName])
+                  )
+-----------------------------------------------------------------------------------------------------------------------------
+Icon TV and Video = 
+    VAR current_month = CALCULATE(
+                                  [Total Sales CM], 'DimProductCategory'[ProductCategoryName] = "TV and Video")
+    
+    VAR last_month = CALCULATE(
+                               [Total Sales PM], 'DimProductCategory'[ProductCategoryName] = "TV and Video")
+
+    VAR mom = DIVIDE(current_month, last_month) * 100
+    VAR RptNum = IF(mom > 100, 10, ROUND(mom / 10, 0))
+    VAR result = REPT("⬬", RptNum) & REPT("⬭", 10 - RptNum)
+
+    RETURN result
+------------------------------------------------------------------------------------------------------------------------------
+Rank Country Sales = 
+    IF(
+        HASONEVALUE('DimGeography'[RegionCountryName]),
+        RANKX(ALL('DimGeography'[RegionCountryName]),
+              [Total Sales])
+            
+)
+-------------------------------------------------------------------------------------------------------------------------------
+CountryWithMostSales = 
+VAR TotalSales = [Total Sales]
+VAR CountrySales = ADDCOLUMNS(VALUES('DimGeography'[RegionCountryName]), "Sales", [Total Sales])
+VAR CountryPerc = ADDCOLUMNS (CountrySales, "Perc", DIVIDE ([Sales], TotalSales))
+VAR Results = 
+    ADDCOLUMNS (
+                CountryPerc,
+                "Result", 'DimGeography'[RegionCountryName] & " (" & FORMAT ( [Perc], "0.00%" ) & ")"
+)
+VAR final = 
+    IF (
+    TotalSales > 0,
+    CONCATENATEX (
+        SELECTCOLUMNS (
+            TOPN ( 1, Results, [Sales] ),
+            "Result", [Result]
+        ),
+        [Result],
+        CONCATENATE ( ",", UNICHAR ( 10 ) )
+    )
+)
+
+    
+RETURN final
+----------------------------------------------------------------------------------------------------------------------------------
+Missed Target Lables = 
+VAR MonthsTable =   
+    FILTER(VALUES('DimDate'[Month Short Name]), 
+           [Target Value] > [Total Sales])
+
+VAR MissedMonthCount = 
+        COALESCE(COUNTROWS(MonthsTable), 0)
+
+VAR MissedValues = 
+    SUMX(MonthsTable,
+         [Target Value] - [Total Sales]
+    )
+
+RETURN MissedMonthCount & " Month(s) Missed Sales Target. Cumulative Loss ≈ " & FORMAT(COALESCE(MissedValues, 0), "#,##0,,.0M")
+------------------------------------------------------------------------------------------------------------------------------------
